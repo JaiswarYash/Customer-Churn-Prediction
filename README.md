@@ -1,0 +1,1 @@
+A Customer Churn Prediction system built using Python, pandas, and machine learning techniques to analyze customer behavior and predict churn. The project includes data preprocessing, feature engineering, model training, and evaluation, providing actionable insights to reduce customer attrition.
