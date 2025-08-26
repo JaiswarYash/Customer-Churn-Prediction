@@ -1,0 +1,15 @@
+Metadata-Version: 2.2
+Name: Customer-Churn-Prediction
+Version: 0.0.1
+Author: yash Kumar
+Author-email: yash.jaiswar0709@gmail.com
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scikit-learn
+Requires-Dist: flask
+Requires-Dist: matplotlib
+Requires-Dist: seaborn
+Requires-Dist: joblib
+Dynamic: author
+Dynamic: author-email
+Dynamic: requires-dist
