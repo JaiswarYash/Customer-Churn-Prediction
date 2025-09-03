@@ -1,10 +1,14 @@
 # Customer Churn Prediction System
 
-A comprehensive machine learning system for predicting customer churn using Python, pandas, and advanced ML techniques. This project includes data preprocessing, feature engineering, model training, evaluation, and deployment.
+A comprehensive machine learning system for predicting customer churn using Python, pandas, and advanced ML techniques. This project includes data preprocessing, feature engineering, model training, evaluation, and prediction.
+![Customer Churn Prediction](report/Customer-churn-model.png)
 
 ## 🎯 Project Overview
 
 This system analyzes customer behavior patterns to predict which customers are likely to leave (churn) a service. It provides actionable insights to reduce customer attrition and improve retention strategies.
+
+## project Workflow
+![work flow](report/workflow.png)
 
 ## 🏗️ Project Structure
 
@@ -18,15 +22,14 @@ Customer Churn Prediction/
 │   ├── EDA.ipynb                     # Exploratory data analysis
 │   └── model.ipynb                   # Model building and evaluation
 ├── src/                              # Source code
-│   ├── components/                    # ML pipeline components
-│   │   ├── data_ingestion.py         # Data loading component
-│   │   ├── data_transformation.py    # Feature engineering component
-│   │   └── model_trainer.py          # Model training component
-│   ├── config/                       # Configuration files
-│   │   └── configuration.py          # Project configuration
-│   └── pipeline/                     # Training pipeline
-├── app.py                            # Flask API for deployment
-├── training_pipeline.py              # Automated training pipeline
+│   ├── components/                   # ML pipeline components
+│   │   ├── data_cleaning.py          # Data loading component
+│   │   ├── model_train.py            # Feature engineering component
+│   │   └── predict.py                # predict the 
+|   |   |__ utils.py                  # Helper functions
+| 
+├── reoprt/                          
+|   ├── images
 ├── requirements.txt                  # Python dependencies
 └── README.md                         # Project documentation
 ```
