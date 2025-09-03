@@ -5,5 +5,7 @@ flask
 matplotlib
 seaborn
 joblib
--e .
+xgboost
+imbalanced-learn
+#-e .
 
