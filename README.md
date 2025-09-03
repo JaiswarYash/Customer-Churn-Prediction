@@ -57,11 +57,6 @@ Customer Churn Prediction/
 - **Performance Comparison**: Side-by-side model evaluation
 - **Best Model Selection**: Automatic selection based on ROC-AUC
 
-### Deployment
-- **Flask API**: RESTful API for real-time predictions
-- **Model Persistence**: Saved models for production use
-- **Health Checks**: API monitoring endpoints
-
 ## 📊 Data Features
 
 The system analyzes 42+ features including:
