@@ -204,7 +204,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 **Yash Kumar**
 - Email: yash.jaiswar0709@gmail.com
-- GitHub: [Your GitHub Profile]
+- GitHub: (https://github.com/JaiswarYash/Customer-Churn-Prediction)
 
 ## 🙏 Acknowledgments
 
