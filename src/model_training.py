@@ -1,17 +1,17 @@
 import os
 import pandas as pd
-from config import processed_data_dir, model_path
+from config import processed_data_dir
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
-import joblib
+
 
 class ModelTraining:
 
     def __init__(self):
         self.processed_dir = processed_data_dir
-        self.model_path = model_path
+
     def load_data(self, file_name):
         file_path = os.path.join(self.processed_dir, file_name)
         if not os.path.exists(file_path):
@@ -30,14 +30,22 @@ class ModelTraining:
         return train_test_split(X,y, test_size=test_size, random_state=random_state)
         
 
-    def pipeline(self, X_train, y_train):
+    def pipeline(self, X_train, y_train, model=None):
 
-        pipeline = Pipeline((
+        if model is None:
+            model = RandomForestClassifier(
+                n_estimators=200,
+                max_features='sqrt',
+                max_depth=None,
+                min_samples_split=10,
+                min_samples_leaf=5,
+                class_weight='balanced',
+                random_state=42
+            )
+    
+        pipeline = Pipeline([
             ('scaler', StandardScaler()),
-            ('model', RandomForestClassifier(n_estimators = 200,max_features ='sqrt',max_depth =None,
-                                            min_samples_split =10, min_samples_leaf = 5,class_weight='balanced',
-                                            bootstrap = True, random_state = 42, criterion = 'gini', 
-                                            ))
-            ))
+            ('model', model)
+        ])
         return pipeline.fit(X_train, y_train)
         
