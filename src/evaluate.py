@@ -1,6 +1,7 @@
+import os
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import cross_val_score
-from config import model_path
+from src.config import model_path
 import joblib
 
 class ModelEval:
@@ -17,11 +18,16 @@ class ModelEval:
         print(f"fi accuracy: {scores.mean():.2f} (+/- {scores.std() * 2:.2f})")
 
     # save model
-    def save_model(self,pipeline):
-        joblib.dump(pipeline, self.save_path)
-        print(f"Model saved to {self.save_path}")
+    def save_model(self, pipeline, model_name='model.pkl'):
+    
+        if not os.path.exists(self.save_path):
+            os.makedirs(self.save_path)
+        save_path = os.path.join(self.save_path, model_name)
+        joblib.dump(pipeline, save_path)
+        print(f"Model saved to {save_path}")
     
     # load model
     def load_model(self):
         pipeline = joblib.load(self.save_path)
         return pipeline
+

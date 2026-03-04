@@ -1,34 +1,40 @@
+from data_ingestion import DataIngestion
+from Feature_engineering import FeatureEngineering
+from model_training import ModelTraining
+from evaluate import ModelEval
+from config import processed_data_dir, model_path, data_dir
+from xgboost import XGBClassifier
 import os
-import pandas as pd
-from src.components.utils import load_data, load_model, evaluate_model, make_predictions, display_results
 
+# ingestion
+def run_ingestion():
+    ingestion = DataIngestion()
 
-def main():
-    print("Starting Customer Churn Prediction...")
+    file_name = []
+    for file in os.listdir(data_dir):
+        if file.endswith(".csv"):
+            file_name.append(file)
+    
+    merged = ingestion.concatenate_files(file_name)
+    cleaned_data = ingestion.clean_data(merged)
+    ingestion.save_data(cleaned_data, 'clean_data.csv')
 
-    # 1. Load processed dataset
-    df = load_data("notebook/data/processed/clean_data.csv")
-    X = df.drop(columns=["Churn"])
-    y = df["Churn"]
+# feature Engineering
+def run_feature_engineering():
+    fe = FeatureEngineering()
+    data = fe.load_clean_data('clean_data.csv')
+    featured = fe.engineer_features(data)
+    fe.save_data(featured,"featured_data.csv")
 
-    # 2. Load trained model
-    model = load_model("models/random_forest_churn.pkl")
+# model training
+def run_modelTraining():
+    mt = ModelTraining()
+    data = mt.load_data("featured_data.csv")
+    X_train, X_test, y_train, y_test = mt.train_n_test(data)
+    return mt.pipeline(X_train, y_train), X_test, y_test
 
-    # 3. Evaluate on full dataset (optional, you might prefer test set)
-    preds, probs = evaluate_model(model, X, y)
-
-    # 4. Prepare results DataFrame
-    results = X.copy().reset_index(drop=True)
-    results["Churn_Prediction"] = preds
-    results["Churn_Probability"] = probs
-
-    # 5. Display first 10 predictions
-    display_results(results, n=10)
-
-    # 6. Save predictions to CSV
-    results.to_csv("notebook/data/predictions/churn_predictions.csv", index=False)
-    print("Predictions saved to data/predictions/churn_predictions.csv")
-
-
-if __name__ == "__main__":
-    main()
+# run eval
+def run_eval(pipeline, X_test, y_test):
+    ev = ModelEval()
+    ev.evaluation(pipeline, X_test, y_test)
+    ev.save_model(pipeline)

@@ -1,9 +1,8 @@
-from data_ingestion import DataIngestion
-from Feature_engineering import FeatureEngineering
-from model_training import ModelTraining
-from evaluate import ModelEval
-from config import processed_data_dir, model_path, data_dir
-from xgboost import XGBClassifier
+from src.data_ingestion import DataIngestion
+from src.Feature_engineering import FeatureEngineering
+from src.model_training import ModelTraining
+from src.evaluate import ModelEval
+from src.config import data_dir
 import os
 
 # ingestion
@@ -35,7 +34,13 @@ def run_modelTraining():
 
 # run eval
 def run_eval(pipeline, X_test, y_test):
-    ev = ModelEval()
-    ev.evaluation(pipeline, X_test, y_test)
-    ev.save_model(pipeline)
+    model_eval = ModelEval()
+    model_eval.evaluation(pipeline, X_test, y_test)
+    model_eval.save_model(pipeline, 'random_forest_model.pkl')
 
+if __name__ == '__main__':
+    run_ingestion()
+    run_feature_engineering()
+    pipeline, X_test, y_test = run_modelTraining()
+    run_eval(pipeline, X_test, y_test)
+    print("Pipeline completed successfully!")

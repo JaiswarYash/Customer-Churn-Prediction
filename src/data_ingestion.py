@@ -1,7 +1,7 @@
 # data ingestion module
 import os
 import pandas as pd
-from config import data_dir, processed_data_dir
+from src.config import data_dir, processed_data_dir
 
 class DataIngestion:
     def __init__(self):
@@ -53,14 +53,16 @@ class DataIngestion:
             data[col] = data[col].replace({'No internet service': 'No', 'No phone service': 'No'})
 
         # 1. mapping churn column to binary values
-        cols = ['Partner', 'Dependents', 'PhoneService', 'PaperlessBilling', 'MultipleLines', 'OnlineSecurity', 'OnlineBackup', 'DeviceProtection', 'TechSupport', 'StreamingTV', 'StreamingMovies']
+        cols = ['Churn','Partner', 'Dependents', 'PhoneService', 'PaperlessBilling', 'MultipleLines', 'OnlineSecurity', 'OnlineBackup', 'DeviceProtection', 'TechSupport', 'StreamingTV', 'StreamingMovies']
 
         for col in cols:
             data[col] = data[col].map({'Yes': 1, 'No': 0})
         
         # mapping churn column to binary values
-        if data['Churn'].dtype == 'object':
-            data['Churn'] = data['Churn'].map({'Yes': 1, 'No': 0})
+        # if data['Churn'].dtype == 'object':
+        #     data['Churn'] = data['Churn'].map({'Yes': 1, 'No': 0})
+        # else:
+        #     data['Churn'] = data['Churn'].astype(int)
 
         # 2. mapping gender column to binary values
         data['gender'] = data['gender'].apply(lambda x: 1 if x == 'Male' else 0)

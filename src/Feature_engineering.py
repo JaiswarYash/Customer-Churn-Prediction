@@ -1,7 +1,7 @@
 # feature engineering module
 import os
 import pandas as pd
-from config import processed_data_dir
+from src.config import processed_data_dir
 
 class FeatureEngineering:
 
@@ -22,12 +22,16 @@ class FeatureEngineering:
     # feature engineering
     def engineer_features(self, data):
         
-        # using one-hot encoding
-        df_encoded = pd.get_dummies(data, columns=['InternetService', 'PaymentMethod'], drop_first=True)
+        # one-hot encoding
+        df_encoded = pd.get_dummies(data, columns=['InternetService', 'PaymentMethod'], drop_first=True,dtype=int)
+        
         # ordinal encoding
         df_encoded['Contract'] = df_encoded['Contract'].map({'Month-to-month': 0, 'One year': 1, 'Two year': 2})
-        # droping week features
-        df_encoded.drop(columns=['gender','PaymentMethod_Mailed check','OnlineBackup', 'DeviceProtection','PhoneService','MultipleLines','StreamingMovies','PaymentMethod_Credit card', 'StreamingTV'], inplace=True)
+        
+        # drop weak features
+        df_encoded.drop(columns=['gender','PaymentMethod_Mailed check','OnlineBackup', 
+                                'DeviceProtection','PhoneService','MultipleLines',
+                                'StreamingMovies','PaymentMethod_Credit card', 'StreamingTV'], inplace=True)
         return df_encoded
     
     # save
