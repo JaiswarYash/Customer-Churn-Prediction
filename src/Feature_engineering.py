@@ -1,7 +1,10 @@
 # feature engineering module
 import os
 import pandas as pd
+import logging
 from src.config import processed_data_dir
+
+logger = logging.getLogger(__name__)
 
 class FeatureEngineering:
 
@@ -13,25 +16,20 @@ class FeatureEngineering:
         file_path = os.path.join(self.directory, file_name)
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File {file_name} not found in {self.directory}")
-        try:
-            data = pd.read_csv(file_path)
-            return data
-        except Exception as e:
-            raise Exception(f"Error loading file {file_name}: {e}")
+       
+        data = pd.read_csv(file_path)
+        logger.info(f"Loaded clean data: {data.shape}")
+        return data
     
     # feature engineering
     def engineer_features(self, data):
         
-        # one-hot encoding
-        df_encoded = pd.get_dummies(data, columns=['InternetService', 'PaymentMethod'], drop_first=True,dtype=int)
-        
-        # ordinal encoding
-        df_encoded['Contract'] = df_encoded['Contract'].map({'Month-to-month': 0, 'One year': 1, 'Two year': 2})
-        
-        # drop weak features
-        df_encoded.drop(columns=['gender','PaymentMethod_Mailed check','OnlineBackup', 
-                                'DeviceProtection','PhoneService','MultipleLines',
-                                'StreamingMovies','PaymentMethod_Credit card', 'StreamingTV'], inplace=True)
+        df_encoded = pd.get_dummies(
+            data,
+            columns=['InternetService', 'PaymentMethod', 'Contract'],
+            drop_first=True,
+            dtype=int
+        )
         return df_encoded
     
     # save
@@ -39,8 +37,6 @@ class FeatureEngineering:
         if not os.path.exists(self.directory):
             os.makedirs(self.directory)
         file_path = os.path.join(self.directory, file_name)
-        try:
-            data.to_csv(file_path, index=False)
-            print(f"Featured data saved to: {file_path}")
-        except Exception as e:
-            raise Exception(f"Error saving file {file_name}: {str(e)}")
+        data.to_csv(file_path, index=False)
+        logger.info(f"Featured data saved to: {file_path}")
+        

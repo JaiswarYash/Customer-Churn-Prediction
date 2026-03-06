@@ -5,8 +5,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
+import mlflow
+import mlflow.sklearn
+import logging
 
-
+logger = logging.getLogger(__name__)
 class ModelTraining:
 
     def __init__(self):
@@ -28,24 +31,35 @@ class ModelTraining:
         X = data.drop(columns=['Churn'])
         y = data['Churn']
         return train_test_split(X,y, test_size=test_size, random_state=random_state)
-        
+    
+    def _default_params(self):
+        return RandomForestClassifier(
+                    n_estimators=200,
+                    max_features='sqrt',
+                    max_depth=None,
+                    min_samples_split=10,
+                    min_samples_leaf=5,
+                    class_weight='balanced',
+                    random_state=42
+                )
+    
 
     def pipeline(self, X_train, y_train, model=None):
+        mlflow.set_experiment("churn-prediction")
 
         if model is None:
-            model = RandomForestClassifier(
-                n_estimators=200,
-                max_features='sqrt',
-                max_depth=None,
-                min_samples_split=10,
-                min_samples_leaf=5,
-                class_weight='balanced',
-                random_state=42
-            )
-    
-        pipeline = Pipeline([
-            ('scaler', StandardScaler()),
-            ('model', model)
-        ])
-        return pipeline.fit(X_train, y_train)
+            model = self._default_params()
+        with mlflow.start_run():
+            
+            mlflow.log_param('n_estimators',200)
+            mlflow.log_param("max_depth", "None")
+            mlflow.log_param("class_weight", "balanced")
+            mlflow.log_param("train_size", len(X_train))
+            pipeline = Pipeline([
+                    ('scaler', StandardScaler()),
+                    ('model', model)
+                ])
+            trained = pipeline.fit(X_train, y_train)
+            mlflow.sklearn.log_model(trained,'churn model')
+        return trained
         

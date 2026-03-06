@@ -4,6 +4,13 @@ from src.model_training import ModelTraining
 from src.evaluate import ModelEval
 from src.config import data_dir
 import os
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s — %(name)s — %(levelname)s — %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # ingestion
 def run_ingestion():
@@ -30,17 +37,32 @@ def run_modelTraining():
     mt = ModelTraining()
     data = mt.load_data("featured_data.csv")
     X_train, X_test, y_train, y_test = mt.train_n_test(data)
-    return mt.pipeline(X_train, y_train), X_test, y_test
+    return mt.pipeline(X_train, y_train), X_train, X_test, y_train, y_test
 
 # run eval
-def run_eval(pipeline, X_test, y_test):
+def run_eval(pipeline, X_train, y_train, X_test, y_test):
     model_eval = ModelEval()
-    model_eval.evaluation(pipeline, X_test, y_test)
+    model_eval.evaluation(pipeline, X_train, y_train, X_test, y_test)
     model_eval.save_model(pipeline, 'random_forest_model.pkl')
 
 if __name__ == '__main__':
-    run_ingestion()
-    run_feature_engineering()
-    pipeline, X_test, y_test = run_modelTraining()
-    run_eval(pipeline, X_test, y_test)
-    print("Pipeline completed successfully!")
+    try:
+        logger.info("Starting ML pipeline...")
+        
+        logger.info("Step 1/4: Data ingestion")
+        run_ingestion()
+        
+        logger.info("Step 2/4: Feature engineering")
+        run_feature_engineering()
+        
+        logger.info("Step 3/4: Model training")
+        pipeline, X_test, y_test = run_modelTraining()
+        
+        logger.info("Step 4/4: Evaluation")
+        run_eval(pipeline, X_test, y_test)
+        
+        logger.info("Pipeline completed successfully!")
+
+    except Exception as e:
+        logger.error(f"Pipeline failed: {str(e)}")
+        raise  # Re-raise so CI/CD pipeline knows it failed
