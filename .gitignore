@@ -33,6 +33,15 @@ MANIFEST
 *.manifest
 *.spec
 
+# MLflow
+mlruns/
+
+# Model artifacts
+models/*.pkl
+
+# Data
+data/raw/
+data/processed_data/
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
