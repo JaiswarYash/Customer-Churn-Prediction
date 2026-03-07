@@ -56,10 +56,10 @@ if __name__ == '__main__':
         run_feature_engineering()
         
         logger.info("Step 3/4: Model training")
-        pipeline, X_test, y_test = run_modelTraining()
+        pipeline, X_train, X_test, y_train, y_test = run_modelTraining()
         
         logger.info("Step 4/4: Evaluation")
-        run_eval(pipeline, X_test, y_test)
+        run_eval(pipeline, X_train, y_train, X_test, y_test)
         
         logger.info("Pipeline completed successfully!")
 

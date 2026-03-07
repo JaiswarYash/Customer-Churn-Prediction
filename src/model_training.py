@@ -1,4 +1,5 @@
 import os
+import json
 import pandas as pd
 from src.config import processed_data_dir
 from sklearn.model_selection import train_test_split
@@ -60,6 +61,11 @@ class ModelTraining:
                     ('model', model)
                 ])
             trained = pipeline.fit(X_train, y_train)
+
+            with open('models/feature_names.json', 'w') as f:
+                json.dump(list(X_train.columns), f)
+                logger.info(f"Feature names saved: {list(X_train.columns)}")
+
             mlflow.sklearn.log_model(trained,'churn model')
         return trained
-        
+    

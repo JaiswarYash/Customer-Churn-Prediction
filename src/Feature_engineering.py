@@ -6,6 +6,8 @@ from src.config import processed_data_dir
 
 logger = logging.getLogger(__name__)
 
+WEAK_FEATURES = ['PaymentMethod_Credit card', 'PhoneService']
+
 class FeatureEngineering:
 
     def __init__(self):
@@ -30,6 +32,10 @@ class FeatureEngineering:
             drop_first=True,
             dtype=int
         )
+
+        existing = [f for f in WEAK_FEATURES if f in df_encoded.columns]
+        df_encoded.drop(columns=existing, inplace=True)
+
         return df_encoded
     
     # save
