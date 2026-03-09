@@ -1,10 +1,19 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from pydantic import BaseModel
 import joblib
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 import pandas as pd
 
 app = FastAPI(title = "Customer Churn API")
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    print("VALIDATION ERROR:", exc.errors())  # prints to your terminal
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()}
+    )
 # load model
 model = joblib.load('models/random_forest_model.pkl')
 
