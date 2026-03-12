@@ -4,8 +4,13 @@ import joblib
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import pandas as pd
+from monitoring.monitor import ModelMonitor
+
+monitor = ModelMonitor()
+recent_predictions = []
 
 app = FastAPI(title = "Customer Churn API")
+
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -40,10 +45,6 @@ class CustomerData(BaseModel):
     PaymentMethod_Mailed_check: int                # 1=Yes, 0=No
     Contract_One_year: int                         # 1=Yes, 0=No
     Contract_Two_year: int                         # 1=Yes, 0=No
-# get
-@app.get('/')
-def index():
-    return {"message": "Customer Churn ML API", "status": "healthy"}
 
 # predict
 @app.post("/churn/predict")
@@ -64,8 +65,31 @@ async def predict_churn(data: CustomerData):
     prediction = model.predict(input_df)[0]
     probability = model.predict_proba(input_df)[0][1]
 
+    records = data.model_dump()
+    records["Churn"] = int(prediction)
+    recent_predictions.append(records)
+    
+
     return {
         "will_churn": bool(prediction),
         "churn_probability": round(float(probability), 3),
         "risk_level": "high" if probability > 0.7 else "medium" if probability > 0.4 else "low"
+    }
+
+# monitor
+
+@app.get("/monitor")
+async def run_monitoring():
+    if len(recent_predictions) < 50:
+        return {
+            "status": "insufficient_data",
+            "message": f"Need at least 50 predictions. Have {len(recent_predictions)}."
+        }
+    df = pd.DataFrame(recent_predictions)
+    summary = monitor.monitor_n_generate_report(df)
+    return {
+        "status": "drift_detected" if summary["drift_detected"] else "no_drift",
+        "features_drifted": f"{summary['n_features_drifted']}/{summary['n_features_total']}",
+        "report_saved": summary["report_path"],
+        "timestamp": summary["timestamp"]
     }
