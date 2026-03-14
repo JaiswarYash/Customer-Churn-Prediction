@@ -77,7 +77,6 @@ async def predict_churn(data: CustomerData):
     }
 
 # monitor
-
 @app.get("/monitor")
 async def run_monitoring():
     if len(recent_predictions) < 50:
