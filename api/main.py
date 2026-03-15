@@ -11,6 +11,9 @@ recent_predictions = []
 
 app = FastAPI(title = "Customer Churn API")
 
+@app.get('/')
+def index():
+    return {"message": "Customer Churn ML API", "status": "healthy"}
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):

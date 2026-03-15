@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import cross_val_score
 from src.config import model_path
@@ -13,6 +14,14 @@ class ModelEval:
     
     # evaluate
     def evaluation(self, pipeline, X_train, y_train, X_test, y_test):
+        if isinstance(X_test, pd.Series):
+            X_test = X_test.to_frame().T
+        if isinstance(X_train, pd.Series):
+            X_train = X_train.to_frame().T
+
+        # ADD THESE TWO LINES
+        print(f"X_train shape: {X_train.shape}")
+        print(f"X_test shape: {X_test.shape}")
         y_pred = pipeline.predict(X_test)
         logger.info(f"\n{classification_report(y_test, y_pred)}")
         logger.info(f"\n{confusion_matrix(y_test, y_pred)}")
