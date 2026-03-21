@@ -45,7 +45,6 @@ class ModelMonitor:
 
             # Extract data
             results = report.as_dict()
-            drift_detected = results["metrics"][0]["result"]["dataset_drift"]
             for metric in results["metrics"]:
                 if "drift_score" in metric:
                     mlflow.log_metric(metric["column_name"], metric["drift_score"])
