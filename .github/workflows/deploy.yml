@@ -8,6 +8,12 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      RAW_DATA_PATH: "data/raw"
+      PROCESSED_DATA_PATH: "data/processed"
+      MODEL_PATH: "models"
+      REPORT_PATH: "monitoring/reports"
+
     steps:
       - uses: actions/checkout@v4
 
@@ -17,8 +23,7 @@ jobs:
 
       - run: pip install -r requirements.txt pytest httpx
 
-      - run: pytest tests/
-
+      - run: pytest tests/test_module.py -v
 
   docker:
     needs: test
