@@ -9,16 +9,18 @@ def test_featuresEngineer():
     print("Feature Engineering is done sucessfully!")
 
 def test_modelTraining():
-    pipeline, X_test, y_test = main.run_modelTraining()
+    pipeline, X_train, X_test, y_train, y_test = main.run_modelTraining()
+    assert pipeline is not None
+    assert X_train.shape[1] == 22  # always 22 features
     print("model training is doing fine!")
-    return pipeline, X_test, y_test
 
 def test_evaluation():
-    pipeline, X_test, y_test = test_modelTraining()
-    main.run_eval(pipeline, X_test, y_test)
+    pipeline, X_train, X_test, y_train, y_test = main.run_modelTraining()
+    main.run_eval(pipeline, X_train, y_train, X_test, y_test)
     print("model is doing well.")
 
-import os
-from src.config import model_path
-assert os.path.exists(model_path), "Model was not saved!"
-print(f"✅ Model saved at {model_path}")
+def test_model_saved():
+    import os
+    from src.config import model_path
+    assert os.path.exists(model_path), "Model was not saved!"
+    print(f"✅ Model saved at {model_path}")

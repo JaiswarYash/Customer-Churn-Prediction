@@ -35,6 +35,7 @@ MANIFEST
 
 # MLflow
 mlruns/
+mlflow.db
 
 # Model artifacts
 models/*.pkl
