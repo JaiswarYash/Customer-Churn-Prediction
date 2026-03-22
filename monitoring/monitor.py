@@ -12,8 +12,12 @@ logger = logging.getLogger(__name__)
 
 class ModelMonitor:
     def __init__(self):
-        self.reference_data = os.path.join(processed_data_dir, "featured_data.csv")
-        self.report_dir = report_path
+        # Use env var or fall back to default path
+        processed = os.getenv('PROCESSED_DATA_PATH', 'data/processed')
+        report = os.getenv('REPORT_PATH', 'monitoring/reports')
+        
+        self.reference_data = os.path.join(processed, "featured_data.csv")
+        self.report_dir = report
         os.makedirs(self.report_dir, exist_ok=True)
     
     def load_reference_data(self) -> pd.DataFrame:
